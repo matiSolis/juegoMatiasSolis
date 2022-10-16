@@ -96,6 +96,19 @@ function dropObjetosArray(Personaje) {
     return Personaje.objetos[Math.floor(Math.random() * Personaje.objetos.length)]
 }
 
+function enemigoDecision (enemigo, seleccionPersonaje){
+    if (enemigo.vida <= 0) {
+        console.log("Enemigo abatido")
+    } else if (enemigo.vida > 0 && enemigo.vida < 16) {
+        enemigo.vida += 15;
+        console.log(`El ${enemigo.tipo} ha tomado una pocima de vida. La vida del enemigo sube a ${enemigo.vida}`);
+    } else {
+        console.log(`Cuidado, el ${enemigo.tipo} te esta atacando!`)
+        seleccionPersonaje.vida -= enemigo.daño;
+        console.log(`Tu vida baja a ${seleccionPersonaje.vida}`);
+    }
+}
+
 function juego(seleccionPersonaje) {
     for (let i = 0; i < monstruosArray.length; i++) {
         let enemigo = monstruosArray[i];
@@ -108,31 +121,13 @@ function juego(seleccionPersonaje) {
                     console.log("Has elegido atacar");
                     enemigo.vida -= seleccionPersonaje.daño;
                     console.log(`La vida del ${enemigo.tipo} es de ${enemigo.vida}`);
-                    if (enemigo.vida === 0) {
-                        console.log("Enemigo abatido")
-                    } else if (enemigo.vida > 0 && enemigo.vida < 16) {
-                        enemigo.vida += 15;
-                        console.log(`El ${enemigo.tipo} ha tomado una pocima de vida. La vida del enemigo sube a ${enemigo.vida}`);
-                    } else {
-                        console.log(`Cuidado, el ${enemigo.tipo} te esta atacando!`)
-                        seleccionPersonaje.vida -= enemigo.daño;
-                        console.log(`Tu vida baja a ${seleccionPersonaje.vida}`);
-                    }
+                    enemigoDecision (enemigo, seleccionPersonaje);
                     break;
                 case 2:
                     console.log("Has elegido beber una pocima")
                     seleccionPersonaje.vida = seleccionPersonaje.vida + 25;
                     console.log(`La vida de tu pj sube a ${seleccionPersonaje.vida}`);
-                    if (enemigo.vida === 0) {
-                        console.log("Enemigo abatido")
-                    } else if (enemigo.vida > 0 && enemigo.vida < 16) {
-                        enemigo.vida += 15;
-                        console.log(`El ${enemigo.tipo} ha tomado una pocima de vida. La vida del enemigo sube a ${enemigo.vida}`);
-                    } else {
-                        console.log(`Cuidado, el ${enemigo.tipo} te esta atacando!`)
-                        seleccionPersonaje.vida -= enemigo.daño;
-                        console.log(`Tu vida baja a ${seleccionPersonaje.vida}`);
-                    }
+                    enemigoDecision (enemigo, seleccionPersonaje);
                     break;
                 default:
                     console.log("Pierdes el turno");
