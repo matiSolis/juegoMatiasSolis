@@ -49,15 +49,15 @@ const inventarioArquera = [];
 
 
 //PERSONAJES Y MONSTRUOS
-const mago = new Personaje("Mago", 100, 10, objMago, inventarioMago)
-const guerrero = new Personaje("Guerrero", 100, 10, objGuerrero, inventarioGuerrero);
-const arquera = new Personaje("Arquera", 100, 10, objArquera, inventarioArquera);
+const mago = new Personaje("Mago", 100, 20, objMago, inventarioMago)
+const guerrero = new Personaje("Guerrero", 100, 20, objGuerrero, inventarioGuerrero);
+const arquera = new Personaje("Arquera", 100, 20, objArquera, inventarioArquera);
 
-const orco = new Monstruos("Orco", 70, 20);
-const espiritu = new Monstruos("Espiritu", 40, 5);
-const huargo = new Monstruos("Huargo", 60, 10);
-const troll = new Monstruos("Troll", 90, 25);
-const balrog = new Monstruos("Balrog", 120, 35);
+const orco = new Monstruos("Orco", 70, 30);
+const espiritu = new Monstruos("Espiritu", 40, 15);
+const huargo = new Monstruos("Huargo", 60, 20);
+const troll = new Monstruos("Troll", 90, 40);
+const balrog = new Monstruos("Balrog", 120, 55);
 
 const monstruosArray = [espiritu, huargo, orco, troll, balrog];
 
@@ -91,91 +91,77 @@ console.table(seleccionPersonaje);
 let enemigo;
 let objeto;
 
+
 function dropObjetosArray(Personaje) {
     return Personaje.objetos[Math.floor(Math.random() * Personaje.objetos.length)]
 }
 
-//JUEGO
-alert("Te paras frente a la entrada de la montaña. Dejas de oir el canto de las aves, una ultima brisa acaricia tu cara. Te das vuelta para ver por ultima vez la luz del sol y pronuncias el hechizo que abre el paso. Enciendes tu antorcha y te adentras a lo desconocido. Lo que suceda a continuacion depende solo de ti y de las decisiones que tomes. Mantente alerta, la muerte acecha en la oscuridad.")
-if (seleccionPersonaje === mago) {
-
+function juego(seleccionPersonaje) {
     for (let i = 0; i < monstruosArray.length; i++) {
         let enemigo = monstruosArray[i];
-
+        console.log(enemigo);
         alert(`Comienzas a adentrarte en la montaña mientras bajas un empinado sendero. Oyes unos horribles gruñidos. Un ${enemigo.tipo} aparece corriendo hacia ti, piensa rapido joven ${seleccionPersonaje.tipo}!`);
-        while (mago.vida > 0 && enemigo.vida > 0) {
-            enemigo.vida -= mago.daño;
-            mago.vida -= enemigo.daño;
-            console.log(`Vida mago ${mago.vida}`);
-            console.log(`Vida ${enemigo.tipo} ${enemigo.vida}`);
+        while (seleccionPersonaje.vida > 0 && enemigo.vida > 0) {
+            let accion = Number(prompt("Seleccione la accion a realizar: '1'- Atacar, '2'- Pocima de vida"));
+            switch (accion) {
+                case 1:
+                    console.log("Has elegido atacar");
+                    enemigo.vida -= seleccionPersonaje.daño;
+                    console.log(`La vida del ${enemigo.tipo} es de ${enemigo.vida}`);
+                    if (enemigo.vida === 0) {
+                        console.log("Enemigo abatido")
+                    } else if (enemigo.vida > 0 && enemigo.vida < 16) {
+                        enemigo.vida += 15;
+                        console.log(`El ${enemigo.tipo} ha tomado una pocima de vida. La vida del enemigo sube a ${enemigo.vida}`);
+                    } else {
+                        console.log(`Cuidado, el ${enemigo.tipo} te esta atacando!`)
+                        seleccionPersonaje.vida -= enemigo.daño;
+                        console.log(`Tu vida baja a ${seleccionPersonaje.vida}`);
+                    }
+                    break;
+                case 2:
+                    console.log("Has elegido beber una pocima")
+                    seleccionPersonaje.vida = seleccionPersonaje.vida + 25;
+                    console.log(`La vida de tu pj sube a ${seleccionPersonaje.vida}`);
+                    if (enemigo.vida === 0) {
+                        console.log("Enemigo abatido")
+                    } else if (enemigo.vida > 0 && enemigo.vida < 16) {
+                        enemigo.vida += 15;
+                        console.log(`El ${enemigo.tipo} ha tomado una pocima de vida. La vida del enemigo sube a ${enemigo.vida}`);
+                    } else {
+                        console.log(`Cuidado, el ${enemigo.tipo} te esta atacando!`)
+                        seleccionPersonaje.vida -= enemigo.daño;
+                        console.log(`Tu vida baja a ${seleccionPersonaje.vida}`);
+                    }
+                    break;
+                default:
+                    console.log("Pierdes el turno");
+                    break;
+            }
         }
-        if (mago.vida <= 0) {
+        if (seleccionPersonaje.vida <= 0) {
             alert("Tu camino ha llegado al fin. La muerte te ha alcanzado.");
+            break;
         } else {
             alert("Has vencido a tu enemigo. Descansa un poco, nuevos peligros te esperan");
-            let objeto = dropObjetosArray(mago);
-            inventarioMago.push(objeto);
-            const last = inventarioMago[inventarioMago.length - 1];
+            let objeto = dropObjetosArray(seleccionPersonaje);
+            seleccionPersonaje.inventario.push(objeto);
+            const last = seleccionPersonaje.inventario[seleccionPersonaje.inventario.length - 1];
             console.log(last);
-            mago.vida = last.vida + mago.vida;
-            mago.daño = last.daño + mago.daño;
-            console.table(seleccionPersonaje);
-        }
-    }
-} else if (seleccionPersonaje === guerrero) {
-
-    for (let i = 0; i < monstruosArray.length; i++) {
-        let enemigo = monstruosArray[i];
-
-        alert(`Comienzas a adentrarte en la montaña mientras bajas un empinado sendero. Oyes unos horribles gruñidos. Un ${enemigo.tipo} aparece corriendo hacia ti, piensa rapido joven ${seleccionPersonaje.tipo}!`);
-        while (guerrero.vida > 0 && enemigo.vida > 0) {
-            enemigo.vida -= guerrero.daño;
-            guerrero.vida -= enemigo.daño;
-            console.log(`Vida ${seleccionPersonaje.tipo} ${guerrero.vida}`);
-            console.log(`Vida ${enemigo.tipo} ${enemigo.vida}`);
-        }
-        if (guerrero.vida <= 0) {
-            alert("Tu camino ha llegado al fin. La muerte te ha alcanzado.");
-        } else {
-            alert("Has vencido a tu enemigo. Descansa un poco, nuevos peligros te esperan");
-            let objeto = dropObjetosArray(guerrero);
-            inventarioGuerrero.push(objeto);
-            const last = inventarioGuerrero[inventarioGuerrero.length - 1];
-            console.log(last);
-            guerrero.vida = last.vida + guerrero.vida;
-            guerrero.daño = last.daño + guerrero.daño;
-            console.table(seleccionPersonaje);
-        }
-    }
-} else {
-    for (let i = 0; i < monstruosArray.length; i++) {
-        let enemigo = monstruosArray[i];
-
-        alert(`Comienzas a adentrarte en la montaña mientras bajas un empinado sendero. Oyes unos horribles gruñidos. Un ${enemigo.tipo} aparece corriendo hacia ti, piensa rapido joven ${seleccionPersonaje.tipo}!`);
-        while (arquera.vida > 0 && enemigo.vida > 0) {
-            enemigo.vida -= arquera.daño;
-            arquera.vida -= enemigo.daño;
-            console.log(`Vida ${seleccionPersonaje.tipo} ${arquera.vida}`);
-            console.log(`Vida ${enemigo.tipo} ${enemigo.vida}`);
-        }
-        if (arquera.vida <= 0) {
-            alert("Tu camino ha llegado al fin. La muerte te ha alcanzado.");
-        } else {
-            alert("Has vencido a tu enemigo. Descansa un poco, nuevos peligros te esperan");
-            let objeto = dropObjetosArray(arquera);
-            inventarioArquera.push(objeto);
-            const last = inventarioArquera[inventarioArquera.length - 1];
-            console.log(last);
-            arquera.vida = last.vida + arquera.vida;
-            arquera.daño = last.daño + arquera.daño;
+            seleccionPersonaje.vida = last.vida + seleccionPersonaje.vida;
+            seleccionPersonaje.daño = last.daño + seleccionPersonaje.daño;
             console.table(seleccionPersonaje);
         }
     }
 }
 
-/* 
-TENGO UN ERROR, SI LOS MONSTRUOS TE MATAN ANTES, SE SIGUE ACTIVANDO EL LOOP HASTA QUE RECORRE TODOS LOS MONSTRUOS
-Y CREO Q PODRIA GENERAR UNA FUNCION POR EJ: JUEGO, Y EN VEZ DE REPETIR EL MISMO CODIGO PARA LOS 3 PERSONAJES APLICAR DIRECTAMENTE LA FUNCION. ES VIABLE ESTO?
-TB ME FALTA GENERAR UNA FUNCION QUE CUENTE LAS PELEAS, PARA ELIMINAR LOS OBJETOS DEL INVENTARIO, CADA OBJETO TIENE UNA DURABILIDAD DISTINTA. ESTO NO LLEGUE A HACERLO
 
-*/
+//JUEGO
+alert("Te paras frente a la entrada de la montaña. Dejas de oir el canto de las aves, una ultima brisa acaricia tu cara. Te das vuelta para ver por ultima vez la luz del sol y pronuncias el hechizo que abre el paso. Enciendes tu antorcha y te adentras a lo desconocido. Lo que suceda a continuacion depende solo de ti y de las decisiones que tomes. Mantente alerta, la muerte acecha en la oscuridad.")
+if (seleccionPersonaje === mago) {
+    juego(mago);
+} else if (seleccionPersonaje === guerrero) {
+    juego(guerrero);
+} else {
+    juego(arquera);
+}
